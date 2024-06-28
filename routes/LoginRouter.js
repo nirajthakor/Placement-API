@@ -26,6 +26,6 @@ router
   .post("/TPOLogin", validateLoginInputtpo, TPOLogin)
   .post("/StudentLogin", validateLoginInputstudent, StudentLogin)
   .post("/CompanyLogin", validateLoginInputcompany, CompanyLogin);
-router.get("/Logout", logout);
+router.post("/Logout", logout);
 
 export default router;
