@@ -68,16 +68,11 @@ export const update = async (req, res) => {
 
 export const updateBranch = async (req, res) => {
   const { id } = req.params;
-  const updatedBranch = await tbl_branch.findByIdAndUpdate(
-    req.body.branch_id,
-    req.body,
-    {
-      new: true,
-    }
-  );
+  const updatedBranch = await tbl_branch.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
 
-  if (!updatedBranch)
-    throw new NotFoundError(`no branch with id : ${req.body.branch_id}`);
+  if (!updatedBranch) throw new NotFoundError(`no branch with id : ${id}`);
 
   res
     .status(StatusCodes.OK)

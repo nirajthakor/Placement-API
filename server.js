@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 
 //Router
 import JobRouter from "./routes/JobRouter.js";
+import StatsRouter from "./routes/DashboardRouter.js";
 import UniversityRouter from "./routes/UniversityRouter.js";
 import CompanyRouter from "./routes/CompanyRouter.js";
 import ApplicationRouter from "./routes/ApplicationRouter.js";
@@ -23,6 +24,7 @@ import JobCollegeRouter from "./routes/JobCollegeRouter.js";
 import authRouter from "./routes/authRouter.js";
 import LoginRouter from "./routes/LoginRouter.js";
 import userRouter from "./routes/userRouter.js";
+import DropdownRouter from "./routes/DropdownRouter.js";
 
 //public
 import { dirname } from "path";
@@ -57,14 +59,16 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/jobs", authenticateUser, JobRouter);
+app.use("/api/v1/stats", authenticateUser, StatsRouter);
 app.use("/api/v1/university", UniversityRouter);
+app.use("/api/v1/dropdown", DropdownRouter);
 app.use("/api/v1/company", CompanyRouter);
 app.use("/api/v1/application", authenticateUser, ApplicationRouter);
 app.use("/api/v1/college", authenticateUser, CollegeRouter);
 app.use("/api/v1/branch", authenticateUser, BranchRouter);
 app.use("/api/v1/degree", authenticateUser, DegreeRouter);
 app.use("/api/v1/joblevel", authenticateUser, JobLevelRouter);
-app.use("/api/v1/student", StudentRouter);
+app.use("/api/v1/student", authenticateUser, StudentRouter);
 app.use("/api/v1/tpo", authenticateUser, TPORouter);
 app.use("/api/v1/jobcollege", authenticateUser, JobCollegeRouter);
 app.use("/api/v1/auth", authRouter);

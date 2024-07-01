@@ -50,23 +50,23 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
-export const getApplicationStats = async (req, res) => {
-  try {
-    const college = await tbl_college.countDocuments();
-    const student = await tbl_student.countDocuments();
-    const university = await tbl_university.countDocuments();
-    const company = await tbl_company.countDocuments();
-    const tpo = await tbl_tpo.countDocuments();
-    res
-      .status(StatusCodes.OK)
-      .json({ college, student, university, company, tpo });
-  } catch (error) {
-    console.error("Error in getApplicationStats:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Server Error" });
-  }
-};
+// export const getApplicationStats = async (req, res) => {
+//   try {
+//     const college = await tbl_college.countDocuments();
+//     const student = await tbl_student.countDocuments();
+//     const university = await tbl_university.countDocuments();
+//     const company = await tbl_company.countDocuments();
+//     const tpo = await tbl_tpo.countDocuments();
+//     res
+//       .status(StatusCodes.OK)
+//       .json({ college, student, university, company, tpo });
+//   } catch (error) {
+//     console.error("Error in getApplicationStats:", error);
+//     res
+//       .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//       .json({ error: "Server Error" });
+//   }
+// };
 
 export const updateUser = async (req, res) => {
   try {

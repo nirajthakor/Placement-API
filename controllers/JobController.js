@@ -3,17 +3,36 @@ import tbl_jobcollegepost from "../model/JobCollegeModel.js";
 import tbl_joblevel from "../model/JobLevelModel.js";
 import tbl_company from "../model/CompanyModel.js";
 import tbl_application from "../model/ApplicationModel.js";
+import tbl_college from "../model/CollegeModel.js";
+import tbl_degree from "../model/Degree_Model.js";
+import tbl_branch from "../model/BranchModel.js";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/customErrors.js";
-import mongoose from "mongoose";
-import day from "dayjs";
 
 export const getAllJobs = async (req, res) => {
-  const jobs = await tbl_jobpost.find({});
+  const jobs = await tbl_jobpost.find({ job_company_id: req.user.userId });
   const jobcollege = await tbl_jobcollegepost.find({});
   const joblevel = await tbl_joblevel.find({});
   const company = await tbl_company.find({});
-  res.status(StatusCodes.OK).json({ jobs, jobcollege, joblevel, company });
+  const college = await tbl_college.find({});
+  const degree = await tbl_degree.find({});
+  const branch = await tbl_branch.find({});
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, jobcollege, joblevel, company, college, degree, branch });
+};
+
+export const getAllJobsClg = async (req, res) => {
+  const jobCollege = await tbl_jobcollegepost.find({
+    job_college_id: req.user.userId,
+  });
+  const jobs = await tbl_jobpost.find({});
+  const company = await tbl_company.find({});
+  res.status(StatusCodes.OK).json({
+    jobCollege,
+    jobs,
+    company,
+  });
 };
 
 export const getJobs = async (req, res) => {
@@ -155,49 +174,4 @@ export const updateStatus = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json({ msg: "Job status modified", job: updatedJob });
-};
-
-//test
-
-export const showStats = async (req, res) => {
-  let stats = await tbl_jobpost.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-    { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
-  ]);
-  stats = stats.reduce((acc, curr) => {
-    const { _id: title, count } = curr;
-    acc[title] = count;
-    return acc;
-  }, {});
-  const defaultStats = {
-    pending: stats.pending || 0,
-    interview: stats.interview || 0,
-    declined: stats.declined || 0,
-  };
-  let monthlyApplications = await tbl_jobpost.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-    {
-      $group: {
-        _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { "_id.year": -1, "_id.month": -1 } },
-    { $limit: 6 },
-  ]);
-  monthlyApplications = monthlyApplications
-    .map((item) => {
-      const {
-        _id: { year, month },
-        count,
-      } = item;
-
-      const date = day()
-        .month(month - 1)
-        .year(year)
-        .format("MMM YY");
-      return { date, count };
-    })
-    .reverse();
-  res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };

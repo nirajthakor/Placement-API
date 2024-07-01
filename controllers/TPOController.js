@@ -1,11 +1,13 @@
 import tbl_tpo from "../model/TPOModel.js";
+import tbl_degree from "../model/Degree_Model.js";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/customErrors.js";
 import { hashPassword } from "../utils/passwordUtils.js";
 
 export const getAllTPOs = async (req, res) => {
   const tpos = await tbl_tpo.find({ tpo_college_id: req.user.userId });
-  res.status(StatusCodes.OK).json({ tpos });
+  const degree = await tbl_degree.find({ college_id: req.user.userId });
+  res.status(StatusCodes.OK).json({ tpos, degree });
 };
 
 export const createTPO = async (req, res) => {

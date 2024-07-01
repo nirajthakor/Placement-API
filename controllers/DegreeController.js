@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/customErrors.js";
 
 export const getAllDegrees = async (req, res) => {
-  const degrees = await tbl_degree.find({});
+  const degrees = await tbl_degree.find({ college_id: req.user.userId });
   const branch = await tbl_branch.find({});
   res.status(StatusCodes.OK).json({ degrees, branch });
 };
@@ -16,6 +16,7 @@ export const createDegree = async (req, res) => {
   const branchesData = req.body.branches.map((branch) => ({
     ...branch,
     degree_id: degree._id,
+    college_id: req.user.userId,
   }));
   const branches = await tbl_branch.insertMany(branchesData);
   res.status(StatusCodes.CREATED).json({ degree, branches });

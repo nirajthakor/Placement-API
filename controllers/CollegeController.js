@@ -7,18 +7,21 @@ import tbl_application from "../model/ApplicationModel.js";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/customErrors.js";
 import { hashPassword } from "../utils/passwordUtils.js";
-import { promises as fs } from "fs";
-import { log } from "console";
 
 export const getAllColleges = async (req, res) => {
-  const colleges = await tbl_college.find({
-    // college_university_id: req.user.userId,
-  });
-  res.status(StatusCodes.OK).json({ colleges });
+  if (req.user.role === "University") {
+    const colleges = await tbl_college.find({
+      college_university_id: req.user.userId,
+    });
+    res.status(StatusCodes.OK).json({ colleges });
+  } else {
+    const colleges = await tbl_college.find({});
+    res.status(StatusCodes.OK).json({ colleges });
+  }
 };
 
 export const createCollege = async (req, res) => {
-  req.body.college_university_id = req.user.userId;
+  // req.body.college_university_id = req.user.userId;
   const hashedPassword = await hashPassword(req.body.college_password);
   req.body.college_password = hashedPassword;
 

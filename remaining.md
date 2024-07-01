@@ -1,8 +1,5 @@
-1 Drop-down
-2 Multiple Select
-3 Add reason
-4 Dashboard
-5 Job Join final
-6 Validation
-8 Delete Degree
-9 Edit Job
+university done only one uni select or not
+college done only delete branch
+tpo all done
+student all done only after apply don't show job list
+company all done only add multiple select

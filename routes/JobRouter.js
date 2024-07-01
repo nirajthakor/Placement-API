@@ -7,9 +7,9 @@ import {
   createJob,
   updateJob,
   deleteJob,
-  showStats,
   updateStatus,
   getJobs,
+  getAllJobsClg,
 } from "../controllers/JobController.js";
 import {
   validateJobParam,
@@ -17,7 +17,7 @@ import {
 } from "../middleware/validationMiddleware.js";
 
 router.get("/getJobs", getJobs);
-router.get("/stats", showStats);
+router.get("/getAllJobsClg", getAllJobsClg);
 router.route("/").get(getAllJobs).post(validateJobInput, createJob);
 
 router

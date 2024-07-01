@@ -8,7 +8,7 @@ const TPOSchema = new mongoose.Schema(
     tpo_image: String,
     tpo_email: String,
     tpo_contact: String,
-    tpo_branch: String,
+    tpo_degree: String,
     tpo_status: {
       type: String,
       default: STATUS.ACTIVE,

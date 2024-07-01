@@ -1,12 +1,35 @@
 import tbl_student from "../model/StudentModel.js";
 import tbl_application from "../model/ApplicationModel.js";
+import tbl_degree from "../model/Degree_Model.js";
+import tbl_branch from "../model/BranchModel.js";
+import tbl_tpo from "../model/TPOModel.js";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/customErrors.js";
 import { hashPassword } from "../utils/passwordUtils.js";
 
 export const getAllStudents = async (req, res) => {
-  const students = await tbl_student.find({});
-  res.status(StatusCodes.OK).json({ students });
+  if (req.user.role === "TPO") {
+    const tpo = await tbl_tpo.findById(req.user.userId);
+    const students = await tbl_student.find({
+      college_id: tpo.tpo_college_id,
+      degree_id: tpo.tpo_degree,
+    });
+    const degree = await tbl_degree.find({ college_id: tpo.tpo_college_id });
+    const branch = await tbl_branch.find({ college_id: tpo.tpo_college_id });
+    res.status(StatusCodes.OK).json({ students, degree, branch });
+  }
+  if (req.user.role === "College") {
+    const students = await tbl_student.find({ college_id: req.user.userId });
+    const degree = await tbl_degree.find({ college_id: req.user.userId });
+    const branch = await tbl_branch.find({ college_id: req.user.userId });
+    res.status(StatusCodes.OK).json({ students, degree, branch });
+  }
+  if (req.user.role === "University") {
+    const students = await tbl_student.find({ university_id: req.user.userId });
+    const degree = await tbl_degree.find({});
+    const branch = await tbl_branch.find({});
+    res.status(StatusCodes.OK).json({ students, degree, branch });
+  }
 };
 
 export const createStudent = async (req, res) => {
