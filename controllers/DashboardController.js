@@ -7,6 +7,7 @@ import tbl_jobcollege from "../model/JobCollegeModel.js";
 import tbl_tpo from "../model/TPOModel.js";
 import tbl_apply from "../model/ApplicationModel.js";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 import day from "dayjs";
 
 export const showStats = async (req, res) => {
@@ -28,9 +29,10 @@ export const showStats = async (req, res) => {
   const totalStudentClg = await tbl_student.countDocuments({
     college_id: req.user.userId,
   });
+  let TPOData = {};
   const tpo = await tbl_tpo.findById(req.user.userId);
-  let totalStudentTPO = 0;
-  let totalJobsTPO = 0;
+  // let totalStudentTPO = 0;
+  // let totalJobsTPO = 0;
   if (tpo) {
     // Count total student for TPO
     const totalStudentTPO = await tbl_student.countDocuments({
@@ -40,6 +42,10 @@ export const showStats = async (req, res) => {
     const totalJobsTPO = await tbl_jobcollege.countDocuments({
       job_college_id: tpo.tpo_college_id,
     });
+    TPOData = {
+      studentTPO: totalStudentTPO || 0,
+      jobTPO: totalJobsTPO || 0,
+    };
   }
   // Count total jobs
   const totalJobs = await tbl_jobcollege.countDocuments({
@@ -52,16 +58,18 @@ export const showStats = async (req, res) => {
   // Count total student for company
   const totalStudent = await tbl_student.countDocuments({});
 
+  let studentData = {};
   const student = await tbl_student.findById(req.user.userId);
-  let totaljobsOpe = 0;
+  // let totaljobsOpe = 0;
   if (student) {
     // Count total job openings for Student
     const totaljobsOpe = await tbl_jobcollege.countDocuments({
       job_college_id: student.college_id,
     });
-    console.log(totaljobsOpe);
+    studentData = {
+      jobsOpe: totaljobsOpe || 0,
+    };
   }
-
   // Count total apply
   const totalJobsApply = await tbl_apply.countDocuments({
     student_id: req.user.userId,
@@ -81,15 +89,17 @@ export const showStats = async (req, res) => {
     company: totalCompany || 0,
     studentUni: totalStudentUni || 0,
     studentClg: totalStudentClg || 0,
-    studentTPO: totalStudentTPO || 0,
-    jobTPO: totalJobsTPO || 0,
     job: totalJobs || 0,
     jobs: totalJob || 0,
     student: totalStudent || 0,
-    jobsOpe: totaljobsOpe || 0,
     JobsApply: totalJobsApply || 0,
     JobAll: JobAll || 0,
     JobsApproved: JobsApproved || 0,
+    // studentTPO: totalStudentTPO || 0,
+    // jobTPO: totalJobsTPO || 0,
+    // jobsOpe: totaljobsOpe || 0,
+    ...studentData,
+    ...TPOData,
   };
 
   let monthlyApplications = await tbl_jobpost.aggregate([
