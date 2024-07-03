@@ -69,6 +69,7 @@ app.use("/api/v1/branch", authenticateUser, BranchRouter);
 app.use("/api/v1/degree", authenticateUser, DegreeRouter);
 app.use("/api/v1/joblevel", authenticateUser, JobLevelRouter);
 app.use("/api/v1/student", authenticateUser, StudentRouter);
+app.use("/api/v1/register", StudentRouter);
 app.use("/api/v1/tpo", authenticateUser, TPORouter);
 app.use("/api/v1/jobcollege", authenticateUser, JobCollegeRouter);
 app.use("/api/v1/auth", authRouter);
