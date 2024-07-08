@@ -137,7 +137,7 @@ export const StudentLogin = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
   });
 
-  res.status(StatusCodes.CREATED).json({ msg: "student logged in" });
+  res.status(StatusCodes.CREATED).json({ msg: "student logged in:", token });
 };
 
 export const CompanyLogin = async (req, res) => {
